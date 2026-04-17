@@ -1,143 +1,229 @@
-const content = document.getElementById('content');
-const settingsBtn = document.getElementById('settingsBtn');
-const drawer = document.getElementById('drawer');
-const closeDrawer = document.getElementById('closeDrawer');
-const drawerBackdrop = document.getElementById('drawerBackdrop');
-const navButtons = [...document.querySelectorAll('[data-view]')];
+font-size: 14px;
+  line-height: 1.5;
+}
 
-let currentView = 'morning';
-let cache = { morning: null, evening: null };
+.feature-icon {
+  font-size: 24px;
+}
 
-settingsBtn.addEventListener('click', openDrawer);
-closeDrawer.addEventListener('click', closeDrawerPanel);
-drawerBackdrop.addEventListener('click', closeDrawerPanel);
+.install-card {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
 
-navButtons.forEach(btn => btn.addEventListener('click', () => switchView(btn.dataset.view)));
+.install-title {
+  font-size: 17px;
+  font-weight: 800;
+}
 
-switchView('morning');
+.install-text {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 4px;
+}
 
-async function switchView(view) {
-  currentView = view;
-  navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
-  if (!cache[view]) {
-    const res = await fetch(`/api/${view}`);
-    cache[view] = await res.json();
+.azkar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.azkar-card {
+  padding: 18px;
+}
+
+.card-top {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.repeat-badge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  background: rgba(200, 164, 107, 0.16);
+  color: var(--gold-dark);
+}
+
+.arabic-text {
+  direction: rtl;
+  font-size: 31px;
+  line-height: 1.9;
+  font-weight: 700;
+  text-align: right;
+  margin-bottom: 16px;
+}
+
+.transcription-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--gold-dark);
+  margin-bottom: 12px;
+}
+
+.translation-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.tasbih-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.tasbih-progress {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex: 0 0 120px;
+}
+
+.progress-ring {
+  width: 120px;
+  height: 120px;
+  transform: rotate(-90deg);
+}
+
+.ring-bg,
+.ring-fill {
+  fill: none;
+  stroke-width: 8;
+}
+
+.ring-bg {
+  stroke: var(--ring-bg);
+}
+
+.ring-fill {
+  stroke: var(--ring-fill);
+  stroke-linecap: round;
+  stroke-dasharray: 326.72;
+  stroke-dashoffset: 326.72;
+  transition: stroke-dashoffset 0.25s ease;
+}
+
+.progress-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.count-value {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.count-total {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.tasbih-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.count-btn {
+  min-width: 88px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.plus-btn {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: white;
+  border: none;
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  width: min(720px, calc(100% - 24px));
+  background: var(--nav);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 8px;
+  backdrop-filter: blur(14px);
+  z-index: 80;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+  min-width: 88px;
+}
+
+.nav-item.active {
+  color: var(--gold-dark);
+}
+
+.fade-in {
+  animation: fadeInUp 0.45s ease both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
   }
-  renderList(cache[view], view);
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-function renderList(items, view) {
-  const title = view === 'morning' ? 'Утренние азкары' : 'Вечерние азкары';
-  const note = view === 'morning'
-    ? 'Состав собран по структуре Azkar.ru и классическим утренним азкарам.'
-    : 'Состав собран по структуре Azkar.ru и классическим вечерним азкарам.';
-
-  if (!items || !items.length) {
-    content.innerHTML = `<div class="empty-state">Нет данных</div>`;
-    return;
+@media (max-width: 640px) {
+  .feature-grid {
+    grid-template-columns: 1fr;
   }
 
-  content.innerHTML = `
-    <section class="section-head">
-      <div>
-        <h2>${title}</h2>
-        <p>${note}</p>
-      </div>
-      <div class="badge">${items.length} азкаров</div>
-    </section>
-    ${items.map(item => renderCard(item, view)).join('')}
-  `;
+  .hero-card h1 {
+    font-size: 28px;
+  }
 
-  bindCounters();
-}
+  .arabic-text {
+    font-size: 26px;
+  }
 
-function renderCard(item, view) {
-  const key = storageKey(view, item.id);
-  const count = Number(localStorage.getItem(key) || 0);
-  const done = count >= item.repeat;
-  return `
-    <article class="azkar-card" data-key="${key}" data-repeat="${item.repeat}">
-      <div class="azkar-meta">
-        <div class="badge">${escapeHtml(item.title)}</div>
-        <div class="source">${escapeHtml(item.source || '')}</div>
-      </div>
-      <div class="arabic">${escapeHtml(item.arabic)}</div>
-      <div class="transcription-wrap">
-        <div class="block-title">Русская транскрипция</div>
-        <div class="transcription">${escapeHtml(item.transcription)}</div>
-      </div>
-      <div class="translation-wrap">
-        <div class="block-title">Перевод</div>
-        <div class="translation">${escapeHtml(item.translation)}</div>
-      </div>
-      <div class="counter">
-        <div class="counter-status">
-          <span>Повторы</span>
-          <strong><span class="current-count">${count}</span> / ${item.repeat}</strong>
-          <span class="${done ? 'done' : ''}">${done ? 'Выполнено' : 'Продолжай чтение'}</span>
-        </div>
-        <div class="counter-actions">
-          <button class="counter-btn ghost reset-btn">Сброс</button>
-          <button class="counter-btn plus-btn">+1</button>
-        </div>
-      </div>
-    </article>
-  `;
-}
+  .tasbih-box {
+    flex-direction: column;
+    align-items: center;
+  }
 
-function bindCounters() {
-  document.querySelectorAll('.azkar-card').forEach(card => {
-    const key = card.dataset.key;
-    const repeat = Number(card.dataset.repeat);
-    const plusBtn = card.querySelector('.plus-btn');
-    const resetBtn = card.querySelector('.reset-btn');
-    const countEl = card.querySelector('.current-count');
-    const stateEl = card.querySelector('.counter-status span:last-child');
-
-    plusBtn.addEventListener('click', () => {
-      const next = Math.min(Number(localStorage.getItem(key) || 0) + 1, repeat);
-      localStorage.setItem(key, String(next));
-      countEl.textContent = String(next);
-      if (next >= repeat) {
-        stateEl.textContent = 'Выполнено';
-        stateEl.classList.add('done');
-      }
-    });
-
-    resetBtn.addEventListener('click', () => {
-      localStorage.setItem(key, '0');
-      countEl.textContent = '0';
-      stateEl.textContent = 'Продолжай чтение';
-      stateEl.classList.remove('done');
-    });
-  });
-}
-
-function storageKey(view, id) {
-  return `nurazkar:${view}:${id}`;
-}
-
-function openDrawer() {
-  drawer.classList.add('open');
-  drawer.setAttribute('aria-hidden', 'false');
-}
-
-function closeDrawerPanel() {
-  drawer.classList.remove('open');
-  drawer.setAttribute('aria-hidden', 'true');
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
-}
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js').catch(() => {});
-  });
+  .tasbih-actions {
+    justify-content: center;
+  }
 }
