@@ -40,21 +40,24 @@ func main() {
  http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-  if err := templates.ExecuteTemplate(w, "index.html", nil); err != nil {
+  err := templates.ExecuteTemplate(w, "index.html", nil)
+  if err != nil {
    http.Error(w, err.Error(), http.StatusInternalServerError)
   }
  })
 
  http.HandleFunc("/morning", func(w http.ResponseWriter, r *http.Request) {
   azkar := loadAzkar("data/morning.json")
-  if err := templates.ExecuteTemplate(w, "azkar.html", azkar); err != nil {
+  err := templates.ExecuteTemplate(w, "azkar.html", azkar)
+  if err != nil {
    http.Error(w, err.Error(), http.StatusInternalServerError)
   }
  })
 
  http.HandleFunc("/evening", func(w http.ResponseWriter, r *http.Request) {
   azkar := loadAzkar("data/evening.json")
-  if err := templates.ExecuteTemplate(w, "azkar.html", azkar); err != nil {
+  err := templates.ExecuteTemplate(w, "azkar.html", azkar)
+  if err != nil {
    http.Error(w, err.Error(), http.StatusInternalServerError)
   }
  })
