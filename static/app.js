@@ -3,8 +3,6 @@
   const themeToggle = document.getElementById("themeToggle");
   const menuToggle = document.getElementById("menuToggle");
   const menuDropdown = document.getElementById("menuDropdown");
-  const installBtn = document.getElementById("installBtn");
-  const installCard = document.getElementById("installCard");
 
   const THEME_KEY = "nurazkar-theme";
 
@@ -22,7 +20,7 @@
   applyTheme(savedTheme);
 
   if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
+    themeToggle.addEventListener("click", function () {
       const next = body.classList.contains("dark") ? "light" : "dark";
       localStorage.setItem(THEME_KEY, next);
       applyTheme(next);
@@ -30,38 +28,15 @@
   }
 
   if (menuToggle && menuDropdown) {
-    menuToggle.addEventListener("click", () => {
+    menuToggle.addEventListener("click", function (e) {
+      e.stopPropagation();
       menuDropdown.classList.toggle("open");
     });
 
-    document.addEventListener("click", (e) => {
+    document.addEventListener("click", function (e) {
       if (!e.target.closest(".menu-wrap")) {
         menuDropdown.classList.remove("open");
       }
-    });
-  }
-
-  let deferredPrompt = null;
-
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (installCard) installCard.hidden = false;
-  });
-
-  if (installBtn) {
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      if (installCard) installCard.hidden = true;
-    });
-  }
-
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/static/service-worker.js").catch(() => {});
     });
   }
 
@@ -73,7 +48,7 @@
   function initCounters() {
     const cards = document.querySelectorAll(".azkar-card");
 
-    cards.forEach((card, index) => {
+    cards.forEach(function (card, index) {
       const target = parseRepeat(card.dataset.repeat);
       const countValue = card.querySelector(".count-value");
       const targetValue = card.querySelector(".target-value");
@@ -82,23 +57,26 @@
       const minusBtn = card.querySelector(".minus-btn");
       const resetBtn = card.querySelector(".reset-btn");
 
-      if (!countValue  !targetValue  !ringFill) return;
-
-      const storageKey = "nurazkar-counter-" + location.pathname + "-" + index;
-      let current = parseInt(localStorage.getItem(storageKey) || "0", 10);
+      if (!countValue  !targetValue  !ringFill) {
+        return;
+      }
 
       const radius = 52;
       const circumference = 2 * Math.PI * radius;
+      const storageKey = "nurazkar-counter-" + location.pathname + "-" + index;
+
+      let current = parseInt(localStorage.getItem(storageKey) || "0", 10);
+      if (isNaN(current)) current = 0;
 
       function render() {
-        targetValue.textContent = target;
         countValue.textContent = current;
+        targetValue.textContent = target;
 
         const progress = Math.min(current / target, 1);
         const offset = circumference - progress * circumference;
 
-        ringFill.style.strokeDasharray = circumference.toFixed(2);
-        ringFill.style.strokeDashoffset = offset.toFixed(2);
+        ringFill.style.strokeDasharray = String(circumference);
+        ringFill.style.strokeDashoffset = String(offset);
       }
 
       function save() {
@@ -106,20 +84,26 @@
         render();
       }
 
-      plusBtn?.addEventListener("click", () => {
-        current += 1;
-        save();
-      });
+      if (plusBtn) {
+        plusBtn.addEventListener("click", function () {
+          current += 1;
+          save();
+        });
+      }
 
-      minusBtn?.addEventListener("click", () => {
-        current = Math.max(0, current - 1);
-        save();
-      });
+      if (minusBtn) {
+        minusBtn.addEventListener("click", function () {
+          current = Math.max(0, current - 1);
+          save();
+        });
+      }
 
-      resetBtn?.addEventListener("click", () => {
-        current = 0;
-        save();
-      });
+      if (resetBtn) {
+        resetBtn.addEventListener("click", function () {
+          current = 0;
+          save();
+        });
+      }
 
       render();
     });
