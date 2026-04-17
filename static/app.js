@@ -1,229 +1,123 @@
-font-size: 14px;
-  line-height: 1.5;
-}
+(function () {
+  const body = document.body;
+  const themeToggle = document.getElementById("themeToggle");
+  const menuToggle = document.getElementById("menuToggle");
+  const menuDropdown = document.getElementById("menuDropdown");
+  const installBtn = document.getElementById("installBtn");
+  const installCard = document.getElementById("installCard");
 
-.feature-icon {
-  font-size: 24px;
-}
+  const THEME_KEY = "nurazkar-theme";
 
-.install-card {
-  padding: 18px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.install-title {
-  font-size: 17px;
-  font-weight: 800;
-}
-
-.install-text {
-  color: var(--muted);
-  font-size: 14px;
-  margin-top: 4px;
-}
-
-.azkar-list {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.azkar-card {
-  padding: 18px;
-}
-
-.card-top {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
-}
-
-.repeat-badge {
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
-  background: rgba(200, 164, 107, 0.16);
-  color: var(--gold-dark);
-}
-
-.arabic-text {
-  direction: rtl;
-  font-size: 31px;
-  line-height: 1.9;
-  font-weight: 700;
-  text-align: right;
-  margin-bottom: 16px;
-}
-
-.transcription-text {
-  font-size: 16px;
-  line-height: 1.7;
-  color: var(--gold-dark);
-  margin-bottom: 12px;
-}
-
-.translation-text {
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--muted);
-  margin-bottom: 20px;
-}
-
-.tasbih-box {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  flex-wrap: wrap;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-
-.tasbih-progress {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  flex: 0 0 120px;
-}
-
-.progress-ring {
-  width: 120px;
-  height: 120px;
-  transform: rotate(-90deg);
-}
-
-.ring-bg,
-.ring-fill {
-  fill: none;
-  stroke-width: 8;
-}
-
-.ring-bg {
-  stroke: var(--ring-bg);
-}
-
-.ring-fill {
-  stroke: var(--ring-fill);
-  stroke-linecap: round;
-  stroke-dasharray: 326.72;
-  stroke-dashoffset: 326.72;
-  transition: stroke-dashoffset 0.25s ease;
-}
-
-.progress-center {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.count-value {
-  font-size: 28px;
-  font-weight: 800;
-}
-
-.count-total {
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.tasbih-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.count-btn {
-  min-width: 88px;
-  padding: 12px 16px;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: var(--shadow);
-}
-
-.plus-btn {
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-  color: white;
-  border: none;
-}
-
-.bottom-nav {
-  position: fixed;
-  left: 50%;
-  bottom: 14px;
-  transform: translateX(-50%);
-  width: min(720px, calc(100% - 24px));
-  background: var(--nav);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: var(--shadow);
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 8px;
-  backdrop-filter: blur(14px);
-  z-index: 80;
-}
-
-.nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 700;
-  min-width: 88px;
-}
-
-.nav-item.active {
-  color: var(--gold-dark);
-}
-
-.fade-in {
-  animation: fadeInUp 0.45s ease both;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 640px) {
-  .feature-grid {
-    grid-template-columns: 1fr;
+  function applyTheme(theme) {
+    if (theme === "dark") {
+      body.classList.add("dark");
+      if (themeToggle) themeToggle.textContent = "☀️";
+    } else {
+      body.classList.remove("dark");
+      if (themeToggle) themeToggle.textContent = "🌙";
+    }
   }
 
-  .hero-card h1 {
-    font-size: 28px;
+  const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+  applyTheme(savedTheme);
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const next = body.classList.contains("dark") ? "light" : "dark";
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    });
   }
 
-  .arabic-text {
-    font-size: 26px;
+  if (menuToggle && menuDropdown) {
+    menuToggle.addEventListener("click", () => {
+      menuDropdown.classList.toggle("open");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".menu-wrap")) {
+        menuDropdown.classList.remove("open");
+      }
+    });
   }
 
-  .tasbih-box {
-    flex-direction: column;
-    align-items: center;
+  let deferredPrompt = null;
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installCard) installCard.hidden = false;
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (installCard) installCard.hidden = true;
+    });
   }
 
-  .tasbih-actions {
-    justify-content: center;
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/static/service-worker.js").catch(() => {});
+    });
   }
-}
+
+  function parseRepeat(value) {
+    const match = String(value || "").match(/\d+/);
+    return match ? parseInt(match[0], 10) : 1;
+  }
+
+  function initCounters() {
+    const cards = document.querySelectorAll(".azkar-card");
+    cards.forEach((card, index) => {
+      const target = parseRepeat(card.dataset.repeat);
+      const countValue = card.querySelector(".count-value");
+      const targetValue = card.querySelector(".target-value");
+      const ringFill = card.querySelector(".ring-fill");
+      const plusBtn = card.querySelector(".plus-btn");
+      const minusBtn = card.querySelector(".minus-btn");
+      const resetBtn = card.querySelector(".reset-btn");
+
+      const storageKey = "nurazkar-counter-" + location.pathname + "-" + index;
+      let current = parseInt(localStorage.getItem(storageKey) || "0", 10);
+
+      const circumference = 2 * Math.PI * 52;
+
+      function render() {
+        if (targetValue) targetValue.textContent = target;
+        if (countValue) countValue.textContent = current;
+
+        const progress = Math.min(current / target, 1);
+        const offset = circumference - progress * circumference;
+        if (ringFill) ringFill.style.strokeDashoffset = offset.toFixed(2);
+      }
+
+      function save() {
+        localStorage.setItem(storageKey, String(current));
+        render();
+      }
+
+      plusBtn?.addEventListener("click", () => {
+        current += 1;
+        save();
+      });
+
+      minusBtn?.addEventListener("click", () => {
+        current = Math.max(0, current - 1);
+        save();
+      });
+
+      resetBtn?.addEventListener("click", () => {
+        current = 0;
+        save();
+      });
+
+      render();
+    });
+  }
+
+  initCounters();
+})();
