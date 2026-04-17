@@ -1,18 +1,67 @@
 (function () {
+  const body = document.body;
   const themeToggle = document.getElementById("themeToggle");
+  const menuToggle = document.getElementById("menuToggle");
+  const menuDropdown = document.getElementById("menuDropdown");
+  const installBtn = document.getElementById("installBtn");
+  const installCard = document.getElementById("installCard");
+
+  const THEME_KEY = "nurazkar-theme";
+
+  function applyTheme(theme) {
+    if (theme === "dark") {
+      body.classList.add("dark");
+      if (themeToggle) themeToggle.textContent = "☀️";
+    } else {
+      body.classList.remove("dark");
+      if (themeToggle) themeToggle.textContent = "🌙";
+    }
+  }
+
+  const savedTheme = localStorage.getItem(THEME_KEY) || "light";
+  applyTheme(savedTheme);
 
   if (themeToggle) {
-    const savedTheme = localStorage.getItem("nurazkar-theme") || "light";
-    if (savedTheme === "dark") {
-      document.body.classList.add("dark");
-      themeToggle.textContent = "☀️";
-    }
-
     themeToggle.addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      const isDark = document.body.classList.contains("dark");
-      localStorage.setItem("nurazkar-theme", isDark ? "dark" : "light");
-      themeToggle.textContent = isDark ? "☀️" : "🌙";
+      const next = body.classList.contains("dark") ? "light" : "dark";
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    });
+  }
+
+  if (menuToggle && menuDropdown) {
+    menuToggle.addEventListener("click", () => {
+      menuDropdown.classList.toggle("open");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".menu-wrap")) {
+        menuDropdown.classList.remove("open");
+      }
+    });
+  }
+
+  let deferredPrompt = null;
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installCard) installCard.hidden = false;
+  });
+
+  if (installBtn) {
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (installCard) installCard.hidden = true;
+    });
+  }
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/static/service-worker.js").catch(() => {});
     });
   }
 
@@ -47,6 +96,7 @@
 
         const progress = Math.min(current / target, 1);
         const offset = circumference - progress * circumference;
+
         ringFill.style.strokeDasharray = circumference.toFixed(2);
         ringFill.style.strokeDashoffset = offset.toFixed(2);
       }
