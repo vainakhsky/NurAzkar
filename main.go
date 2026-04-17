@@ -11,13 +11,13 @@ import (
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
 type Azkar struct {
- ID            string
- Title         string
- Arabic        string
- Transcription string
- Translation   string
- Repeat        int
- Source        string
+ ID            string json:"id"
+ Title         string json:"title"
+ Arabic        string json:"arabic"
+ Transcription string json:"transcription"
+ Translation   string json:"translation"
+ Repeat        int    json:"repeat"
+ Source        string json:"source"
 }
 func loadAzkar(path string) []Azkar {
  data, err := os.ReadFile(path)
