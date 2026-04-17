@@ -1,20 +1,25 @@
 {
   "name": "NurAzkar",
   "short_name": "NurAzkar",
+  "description": "Утренние и вечерние азкары",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#f5efe6",
-  "theme_color": "#d6c2a1",
+  "background_color": "#1f1a17",
+  "theme_color": "#1f1a17",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "/static/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/static/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
