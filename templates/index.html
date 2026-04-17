@@ -2,61 +2,102 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#8e745b" />
-  <title>{{.AppName}}</title>
-  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NurAzkar</title>
+  <meta name="theme-color" content="#1f1a17" />
+  <meta name="description" content="Утренние и вечерние азкары" />
+  <link rel="manifest" href="/static/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/static/icon-192.png" />
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <div>
-        <div class="eyebrow">Ежедневные азкары</div>
-        <h1>{{.AppName}}</h1>
-      </div>
-      <button id="settingsBtn" class="icon-button" aria-label="Открыть настройки">⚙</button>
-    </header>
-
-    <section class="hero-card">
-      <div class="hero-pattern"></div>
-      <div class="hero-content">
-        <p class="hero-kicker">Утро и вечер</p>
-        <h2>Красивый формат как приложение</h2>
-        <p>Выбери раздел, читай азкары, отмечай количество повторов и устанавливай сайт на телефон.</p>
-        <div class="home-actions">
-          <button class="primary-pill" data-view="morning">☀️ Утренние</button>
-          <button class="primary-pill secondary" data-view="evening">🌙 Вечерние</button>
+      <div class="brand-wrap">
+        <div class="brand-icon">
+          <img src="/static/icon-192.png" alt="NurAzkar" />
+        </div>
+        <div>
+          <div class="brand-title">NurAzkar</div>
+          <div class="brand-subtitle">Утренние и вечерние азкары</div>
         </div>
       </div>
-    </section>
 
-    <main id="content" class="content"></main>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle" aria-label="Переключить тему">🌙</button>
+
+        <div class="menu-wrap">
+          <button class="icon-btn" id="menuToggle" aria-label="Открыть меню">⚙️</button>
+          <div class="menu-dropdown" id="menuDropdown">
+            <div class="menu-card">
+              <div class="menu-title">Контакты</div>
+              <a href="https://instagram.com/vainakhsky" target="_blank" rel="noopener">@vainakhsky</a>
+              <a href="https://t.me/m_shamaev" target="_blank" rel="noopener">@m_shamaev</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="home-main">
+      <section class="hero-card fade-in">
+        <div class="hero-badge">Premium Islamic App Style</div>
+        <h1>Свет ежедневного зикра</h1>
+        <p>
+          Красивый и удобный формат для чтения утренних и вечерних азкаров
+          с транскрипцией, переводом и тасбих-счётчиком.
+        </p>
+
+        <div class="hero-actions">
+          <a href="/morning" class="primary-btn">☀️ Утренние</a>
+          <a href="/evening" class="secondary-btn">🌙 Вечерние</a>
+        </div>
+      </section>
+
+      <section class="feature-grid fade-in">
+        <div class="feature-card">
+          <div class="feature-icon">📿</div>
+          <h3>Тасбих-счётчик</h3>
+          <p>Отдельный счётчик для каждого азкара.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🕊</div>
+          <h3>Удобное чтение</h3>
+          <p>Крупный арабский текст, транскрипция и перевод.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🌙</div>
+          <h3>Ночной режим</h3>
+          <p>Комфортное чтение днём и ночью.</p>
+        </div>
+      </section>
+
+      <section class="install-card fade-in" id="installCard" hidden>
+        <div>
+          <div class="install-title">Установить NurAzkar</div>
+          <div class="install-text">Добавь приложение на главный экран телефона.</div>
+        </div>
+        <button class="primary-btn small-btn" id="installBtn">Установить</button>
+      </section>
+    </main>
 
     <nav class="bottom-nav">
-      <button class="nav-btn active" data-view="morning">☀️<span>Утро</span></button>
-      <button class="nav-btn" data-view="evening">🌙<span>Вечер</span></button>
+      <a href="/" class="nav-item active">
+        <span>🏠</span>
+        <span>Главная</span>
+      </a>
+      <a href="/morning" class="nav-item">
+        <span>☀️</span>
+        <span>Утренние</span>
+      </a>
+      <a href="/evening" class="nav-item">
+        <span>🌙</span>
+        <span>Вечерние</span>
+      </a>
     </nav>
   </div>
-
-  <aside id="drawer" class="drawer" aria-hidden="true">
-    <div class="drawer-backdrop" id="drawerBackdrop"></div>
-    <div class="drawer-panel">
-      <div class="drawer-head">
-        <h3>Контакты</h3>
-        <button id="closeDrawer" class="icon-button" aria-label="Закрыть">✕</button>
-      </div>
-      <div class="contact-card">
-        <div class="contact-label">Instagram</div>
-        <div class="contact-value">@vainakhsky</div>
-      </div>
-      <div class="contact-card">
-        <div class="contact-label">Telegram</div>
-        <div class="contact-value">@m_shamaev</div>
-      </div>
-      <p class="drawer-note">Сделано в мягком восточном бежевом стиле для NurAzkar.</p>
-    </div>
-  </aside>
 
   <script src="/static/app.js"></script>
 </body>
