@@ -7,7 +7,7 @@ import (
  "net/http"
  "os"
 )
-
+var templates = template.Must(template.ParseGlob("templates/*.html"))
 type Azkar struct {
  ID            string json:"id"
  Title         string json:"title"
