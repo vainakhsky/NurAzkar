@@ -1,77 +1,29 @@
 (function () {
-  const body = document.body;
   const themeToggle = document.getElementById("themeToggle");
-  const menuToggle = document.getElementById("menuToggle");
-  const menuDropdown = document.getElementById("menuDropdown");
-  const installBtn = document.getElementById("installBtn");
-  const installCard = document.getElementById("installCard");
-
-  const THEME_KEY = "nurazkar-theme";
-
-  function applyTheme(theme) {
-    if (theme === "dark") {
-      body.classList.add("dark");
-      if (themeToggle) themeToggle.textContent = "☀️";
-    } else {
-      body.classList.remove("dark");
-      if (themeToggle) themeToggle.textContent = "🌙";
-    }
-  }
-
-  const savedTheme = localStorage.getItem(THEME_KEY) || "light";
-  applyTheme(savedTheme);
 
   if (themeToggle) {
+    const savedTheme = localStorage.getItem("nurazkar-theme") || "light";
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark");
+      themeToggle.textContent = "☀️";
+    }
+
     themeToggle.addEventListener("click", () => {
-      const next = body.classList.contains("dark") ? "light" : "dark";
-      localStorage.setItem(THEME_KEY, next);
-      applyTheme(next);
-    });
-  }
-
-  if (menuToggle && menuDropdown) {
-    menuToggle.addEventListener("click", () => {
-      menuDropdown.classList.toggle("open");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".menu-wrap")) {
-        menuDropdown.classList.remove("open");
-      }
-    });
-  }
-
-  let deferredPrompt = null;
-
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (installCard) installCard.hidden = false;
-  });
-
-  if (installBtn) {
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      if (installCard) installCard.hidden = true;
-    });
-  }
-
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("/static/service-worker.js").catch(() => {});
+      document.body.classList.toggle("dark");
+      const isDark = document.body.classList.contains("dark");
+      localStorage.setItem("nurazkar-theme", isDark ? "dark" : "light");
+      themeToggle.textContent = isDark ? "☀️" : "🌙";
     });
   }
 
   function parseRepeat(value) {
-    const match = String(value || "").match(/\d+/);
+    const match = String(value || "1").match(/\d+/);
     return match ? parseInt(match[0], 10) : 1;
   }
 
   function initCounters() {
     const cards = document.querySelectorAll(".azkar-card");
+
     cards.forEach((card, index) => {
       const target = parseRepeat(card.dataset.repeat);
       const countValue = card.querySelector(".count-value");
@@ -81,38 +33,64 @@
       const minusBtn = card.querySelector(".minus-btn");
       const resetBtn = card.querySelector(".reset-btn");
 
+      if (!countValue  !targetValue  !ringFill) return;
+
+      let doneBadge = card.querySelector(".done-badge");
+      if (!doneBadge) {
+        doneBadge = document.createElement("div");
+        doneBadge.className = "done-badge";
+        doneBadge.textContent = "Выполнено ✓";
+        const box = card.querySelector(".tasbih-box");
+        if (box) box.appendChild(doneBadge);
+      }
+
       const storageKey = "nurazkar-counter-" + location.pathname + "-" + index;
       let current = parseInt(localStorage.getItem(storageKey) || "0", 10);
 
-      const circumference = 2 * Math.PI * 52;
+      const radius = 52;
+      const circumference = 2 * Math.PI * radius;
+
+      function animateNumber() {
+        countValue.classList.remove("bump");
+        void countValue.offsetWidth;
+        countValue.classList.add("bump");
+      }
 
       function render() {
-        if (targetValue) targetValue.textContent = target;
-        if (countValue) countValue.textContent = current;
+        targetValue.textContent = target;
+        countValue.textContent = current;
 
         const progress = Math.min(current / target, 1);
         const offset = circumference - progress * circumference;
-        if (ringFill) ringFill.style.strokeDashoffset = offset.toFixed(2);
+        ringFill.style.strokeDasharray = circumference.toFixed(2);
+        ringFill.style.strokeDashoffset = offset.toFixed(2);
+
+        if (current >= target) {
+          card.classList.add("tasbih-done");
+        } else {
+          card.classList.remove("tasbih-done");
+        }
       }
 
-      function save() {
+      function save(withAnim = false) {
         localStorage.setItem(storageKey, String(current));
         render();
+        if (withAnim) animateNumber();
       }
 
       plusBtn?.addEventListener("click", () => {
         current += 1;
-        save();
+        save(true);
       });
 
       minusBtn?.addEventListener("click", () => {
         current = Math.max(0, current - 1);
-        save();
+        save(true);
       });
 
       resetBtn?.addEventListener("click", () => {
         current = 0;
-        save();
+        save(true);
       });
 
       render();
