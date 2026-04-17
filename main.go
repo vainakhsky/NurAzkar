@@ -7,7 +7,9 @@ import (
  "net/http"
  "os"
 )
+
 var templates = template.Must(template.ParseGlob("templates/*.html"))
+
 type Azkar struct {
  ID            string json:"id"
  Title         string json:"title"
@@ -17,8 +19,6 @@ type Azkar struct {
  Repeat        int    json:"repeat"
  Source        string json:"source"
 }
-
-var templates = template.Must(template.ParseGlob("templates/*.html"))
 
 func loadAzkar(path string) []Azkar {
  data, err := os.ReadFile(path)
