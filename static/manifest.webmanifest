@@ -3,9 +3,8 @@
   "short_name": "NurAzkar",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f5ede2",
-  "theme_color": "#8e745b",
-  "description": "Утренние и вечерние азкары в красивом формате.",
+  "background_color": "#f5efe6",
+  "theme_color": "#d6c2a1",
   "icons": [
     {
       "src": "/static/icon-192.png",
