@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NurAzkar</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <h1>Азкары</h1>
+    <a href="/">← Назад</a>
+
+    {{range .}}
+    <div style="margin:20px 0; padding:16px; border:1px solid #ddd; border-radius:12px;">
+      <div style="font-size:28px; direction:rtl; text-align:right; margin-bottom:12px;">
+        {{.Arabic}}
+      </div>
+      <div style="margin-bottom:8px;">
+        {{.Transcription}}
+      </div>
+      <div style="margin-bottom:8px;">
+        {{.Translation}}
+      </div>
+      <div>
+        Повтор: {{.Repeat}}
+      </div>
+    </div>
+    {{end}}
+  </div>
+</body>
+</html>
