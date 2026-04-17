@@ -1,99 +1,69 @@
 package main
 
 import (
-    "encoding/json"
-    "html/template"
-    "log"
-    "net/http"
-    "os"
-    "path/filepath"
+ "encoding/json"
+ "html/template"
+ "log"
+ "net/http"
+ "os"
 )
 
 type Azkar struct {
-    ID            string `json:"id"`
-    Title         string `json:"title"`
-    Arabic        string `json:"arabic"`
-    Transcription string `json:"transcription"`
-    Translation   string `json:"translation"`
-    Repeat        int    `json:"repeat"`
-    Source        string `json:"source"`
-}
-
-type PageData struct {
-    AppName string
+ ID            string json:"id"
+ Title         string json:"title"
+ Arabic        string json:"arabic"
+ Transcription string json:"transcription"
+ Translation   string json:"translation"
+ Repeat        int    json:"repeat"
+ Source        string json:"source"
 }
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
+func loadAzkar(path string) []Azkar {
+ data, err := os.ReadFile(path)
+ if err != nil {
+  log.Println("read error:", path, err)
+  return []Azkar{}
+ }
+
+ var azkar []Azkar
+ if err := json.Unmarshal(data, &azkar); err != nil {
+  log.Println("json error:", path, err)
+  return []Azkar{}
+ }
+
+ return azkar
+}
+
 func main() {
-    mux := http.NewServeMux()
+ http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-    mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-    mux.HandleFunc("/", indexHandler)
-    mux.HandleFunc("/api/morning", azkarHandler("data/morning.json"))
-    mux.HandleFunc("/api/evening", azkarHandler("data/evening.json"))
-    mux.HandleFunc("/manifest.webmanifest", serveStaticFile("static/manifest.webmanifest", "application/manifest+json"))
-    mux.HandleFunc("/service-worker.js", serveStaticFile("static/service-worker.js", "application/javascript"))
+ http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+  if err := templates.ExecuteTemplate(w, "index.html", nil); err != nil {
+   http.Error(w, err.Error(), http.StatusInternalServerError)
+  }
+ })
 
-    port := os.Getenv("PORT")
-    if port == "" {
-        port = "8080"
-    }
-    addr := ":" + port
+ http.HandleFunc("/morning", func(w http.ResponseWriter, r *http.Request) {
+  azkar := loadAzkar("data/morning.json")
+  if err := templates.ExecuteTemplate(w, "azkar.html", azkar); err != nil {
+   http.Error(w, err.Error(), http.StatusInternalServerError)
+  }
+ })
 
-    log.Printf("NurAzkar running on http://localhost%s", addr)
-    if err := http.ListenAndServe(addr, loggingMiddleware(mux)); err != nil {
-        log.Fatal(err)
-    }
-}
+ http.HandleFunc("/evening", func(w http.ResponseWriter, r *http.Request) {
+  azkar := loadAzkar("data/evening.json")
+  if err := templates.ExecuteTemplate(w, "azkar.html", azkar); err != nil {
+   http.Error(w, err.Error(), http.StatusInternalServerError)
+  }
+ })
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-    if r.URL.Path != "/" {
-        http.NotFound(w, r)
-        return
-    }
-    _ = templates.ExecuteTemplate(w, "index.html", PageData{AppName: "NurAzkar"})
-}
+ port := os.Getenv("PORT")
+ if port == "" {
+  port = "8080"
+ }
 
-func azkarHandler(path string) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        items, err := loadAzkar(path)
-        if err != nil {
-            http.Error(w, "failed to load azkar", http.StatusInternalServerError)
-            return
-        }
-        w.Header().Set("Content-Type", "application/json; charset=utf-8")
-        _ = json.NewEncoder(w).Encode(items)
-    }
-}
-
-func loadAzkar(path string) ([]Azkar, error) {
-    b, err := os.ReadFile(filepath.Clean(path))
-    if err != nil {
-        return nil, err
-    }
-    var items []Azkar
-    if err := json.Unmarshal(b, &items); err != nil {
-        return nil, err
-    }
-    return items, nil
-}
-
-func serveStaticFile(path string, contentType string) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        b, err := os.ReadFile(filepath.Clean(path))
-        if err != nil {
-            http.NotFound(w, r)
-            return
-        }
-        w.Header().Set("Content-Type", contentType)
-        _, _ = w.Write(b)
-    }
-}
-
-func loggingMiddleware(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        log.Printf("%s %s", r.Method, r.URL.Path)
-        next.ServeHTTP(w, r)
-    })
+ log.Println("server started on :" + port)
+ log.Fatal(http.ListenAndServe(":"+port, nil))
 }
