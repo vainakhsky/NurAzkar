@@ -23,16 +23,12 @@ type Azkar struct {
 func loadAzkar(path string) []Azkar {
  data, err := os.ReadFile(path)
  if err != nil {
-  log.Println("read error:", path, err)
+  log.Println(err)
   return []Azkar{}
  }
 
  var azkar []Azkar
- if err := json.Unmarshal(data, &azkar); err != nil {
-  log.Println("json error:", path, err)
-  return []Azkar{}
- }
-
+ json.Unmarshal(data, &azkar)
  return azkar
 }
 
@@ -40,26 +36,17 @@ func main() {
  http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-  err := templates.ExecuteTemplate(w, "index.html", nil)
-  if err != nil {
-   http.Error(w, err.Error(), http.StatusInternalServerError)
-  }
+  templates.ExecuteTemplate(w, "index.html", nil)
  })
 
  http.HandleFunc("/morning", func(w http.ResponseWriter, r *http.Request) {
   azkar := loadAzkar("data/morning.json")
-  err := templates.ExecuteTemplate(w, "azkar.html", azkar)
-  if err != nil {
-   http.Error(w, err.Error(), http.StatusInternalServerError)
-  }
+  templates.ExecuteTemplate(w, "azkar.html", azkar)
  })
 
  http.HandleFunc("/evening", func(w http.ResponseWriter, r *http.Request) {
   azkar := loadAzkar("data/evening.json")
-  err := templates.ExecuteTemplate(w, "azkar.html", azkar)
-  if err != nil {
-   http.Error(w, err.Error(), http.StatusInternalServerError)
-  }
+  templates.ExecuteTemplate(w, "azkar.html", azkar)
  })
 
  port := os.Getenv("PORT")
@@ -67,6 +54,5 @@ func main() {
   port = "8080"
  }
 
- log.Println("server started on :" + port)
  log.Fatal(http.ListenAndServe(":"+port, nil))
 }
