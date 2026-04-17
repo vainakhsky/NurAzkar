@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NurAzkar</title>
-  <meta name="theme-color" content="#1f1a17" />
-  <link rel="manifest" href="/static/manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="/static/icon-192.png" />
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
@@ -23,38 +20,15 @@
 
     <main class="azkar-list">
       {{range .}}
-      <article class="azkar-card fade-in" data-repeat='{{index . "repeat"}}'>
-        <div class="card-top">
-          <div class="repeat-badge">Повтор: {{index . "repeat"}}</div>
-        </div>
+      <article class="azkar-card" style="margin-bottom:20px;">
+        <div class="repeat-badge" style="margin-bottom:12px;">Повтор: {{.Repeat}}</div>
 
-        <div class="arabic-text">{{index . "arabic"}}</div>
-        <div class="transcription-text">{{index . "transcription"}}</div>
-        <div class="translation-text">{{index . "translation"}}</div>
-
-        <div class="tasbih-box">
-          <div class="tasbih-progress">
-            <svg viewBox="0 0 120 120" class="progress-ring">
-              <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
-              <circle class="ring-fill" cx="60" cy="60" r="52"></circle>
-            </svg>
-            <div class="progress-center">
-              <div class="count-value">0</div>
-              <div class="count-total">/ <span class="target-value">{{index . "repeat"}}</span></div>
-            </div>
-          </div>
-
-          <div class="tasbih-actions">
-            <button class="count-btn minus-btn">−1</button>
-            <button class="count-btn plus-btn">+1</button>
-            <button class="count-btn reset-btn">Сброс</button>
-          </div>
-        </div>
+        <div class="arabic-text">{{.Arabic}}</div>
+        <div class="transcription-text">{{.Transcription}}</div>
+        <div class="translation-text">{{.Translation}}</div>
       </article>
       {{end}}
     </main>
   </div>
-
-  <script src="/static/app.js"></script>
 </body>
 </html>
