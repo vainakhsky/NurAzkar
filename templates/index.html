@@ -2,21 +2,22 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>NurAzkar</title>
   <meta name="theme-color" content="#1f1a17" />
-  <meta name="description" content="Утренние и вечерние азкары" />
   <link rel="manifest" href="/static/manifest.webmanifest" />
   <link rel="apple-touch-icon" href="/static/icon-192.png" />
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <div class="app-shell">
+
     <header class="topbar">
       <div class="brand-wrap">
         <div class="brand-icon">
-          <img src="/static/icon-192.png" alt="NurAzkar" />
+          <img src="/static/icon-192.png" alt="NurAzkar" style="width:72px;height:72px;border-radius:18px;">
         </div>
+
         <div>
           <div class="brand-title">NurAzkar</div>
           <div class="brand-subtitle">Утренние и вечерние азкары</div>
@@ -28,6 +29,7 @@
 
         <div class="menu-wrap">
           <button class="icon-btn" id="menuToggle" aria-label="Открыть меню">⚙️</button>
+
           <div class="menu-dropdown" id="menuDropdown">
             <div class="menu-card">
               <div class="menu-title">Контакты</div>
@@ -39,7 +41,7 @@
       </div>
     </header>
 
-    <main class="home-main">
+    <main class="azkar-list">
       <section class="hero-card fade-in">
         <div class="hero-badge">Premium Islamic App Style</div>
         <h1>Свет ежедневного зикра</h1>
@@ -62,7 +64,7 @@
         </div>
 
         <div class="feature-card">
-          <div class="feature-icon">🕊</div>
+          <div class="feature-icon">🕊️</div>
           <h3>Удобное чтение</h3>
           <p>Крупный арабский текст, транскрипция и перевод.</p>
         </div>
@@ -72,14 +74,6 @@
           <h3>Ночной режим</h3>
           <p>Комфортное чтение днём и ночью.</p>
         </div>
-      </section>
-
-      <section class="install-card fade-in" id="installCard" hidden>
-        <div>
-          <div class="install-title">Установить NurAzkar</div>
-          <div class="install-text">Добавь приложение на главный экран телефона.</div>
-        </div>
-        <button class="primary-btn small-btn" id="installBtn">Установить</button>
       </section>
     </main>
 
